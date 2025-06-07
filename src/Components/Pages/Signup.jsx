@@ -5,7 +5,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 export default function Signup() {
-
+    const SIGNUP_URL = process.env.REACT_APP_API_KEY + "/signup";
     const Navigate = useNavigate();
 
     const GoToLogin = () => {
@@ -38,7 +38,7 @@ export default function Signup() {
 
     const handleSignup = async () => {
         try {
-            const res = await axios.post("http://localhost:8080/signup" , data , {
+            const res = await axios.post(SIGNUP_URL , data , {
                 headers: {
                     "Content-Type": "application/json",
                 },

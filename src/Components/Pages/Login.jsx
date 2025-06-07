@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function Login() {
+    const LOGIN_URL = process.env.REACT_APP_API_KEY + "/login";
     const Navigate = useNavigate();
 
     const GoToSignup = () => {
@@ -49,7 +50,7 @@ export default function Login() {
         setIsLoading(true);
         
         try {
-            const res = await axios.post("http://localhost:8080/login", data, {
+            const res = await axios.post(LOGIN_URL, data, {
                 headers: {
                     "Content-Type": "application/json",
                 },

@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
 
+const EXAM_URL =  process.env.REACT_APP_API_KEY + "/${examCode}";
+
 const useTestStore = create((set, get) => ({
   questions: [],
   currentQuestionIndex: 0,
@@ -11,7 +13,7 @@ const useTestStore = create((set, get) => ({
     if (!examCode || !token) return;
 
     try {
-      const response = await axios.get(`http://localhost:8080/${examCode}`, {
+      const response = await axios.get(EXAM_URL, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
