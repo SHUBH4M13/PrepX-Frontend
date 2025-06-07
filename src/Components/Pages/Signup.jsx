@@ -5,7 +5,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 export default function Signup() {
-    const SIGNUP_URL = process.env.REACT_APP_API_KEY + "/signup";
+    const SIGNUP_URL = import.meta.env.VITE_BACKEND_URL+ "/signup";
     const Navigate = useNavigate();
 
     const GoToLogin = () => {

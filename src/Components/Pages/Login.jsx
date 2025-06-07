@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function Login() {
-    const LOGIN_URL = process.env.REACT_APP_API_KEY + "/login";
+    const LOGIN_URL = import.meta.env.VITE_BACKEND_URL + "/login";
     const Navigate = useNavigate();
 
     const GoToSignup = () => {

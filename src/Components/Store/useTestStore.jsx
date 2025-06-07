@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const EXAM_URL =  process.env.REACT_APP_API_KEY + "/${examCode}";
+const EXAM_URL =  import.meta.env.VITE_BACKEND_URL + "/${examCode}";
 
 const useTestStore = create((set, get) => ({
   questions: [],
