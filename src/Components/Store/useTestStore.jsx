@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const EXAM_URL =  import.meta.env.VITE_BACKEND_URL + "/${examCode}";
+const EXAM_URL = `${import.meta.env.VITE_BACKEND_URL}/${examCode}`
 
 const useTestStore = create((set, get) => ({
   questions: [],
@@ -18,6 +18,7 @@ const useTestStore = create((set, get) => ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       });
       const fetchedQuestions = response.data;
 

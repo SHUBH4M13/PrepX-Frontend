@@ -36,24 +36,95 @@ export default function Signup() {
     }
     
 
-    const handleSignup = async () => {
+    const handleSignup = async (e) => {
+        e.preventDefault(); // Prevent form default submission if called from form
+        
+        // Input validation
+        if (!data.username || !data.password || !data.email) {
+            setSignUpError("Please fill in all required fields");
+            return;
+        }
+        
+        // Optional: Add password strength validation
+        if (data.password.length < 6) {
+            setSignUpError("Password must be at least 6 characters long");
+            return;
+        }
+        
+        setLoading(true); // Assuming you have a loading state
+        setSignUpError(""); // Clear previous errors
+    
         try {
-            const res = await axios.post(SIGNUP_URL , data , {
+            console.log("Attempting signup to:", SIGNUP_URL);
+            
+            const res = await axios.post(SIGNUP_URL, data, {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                withCredentials: true,
+                timeout: 10000, // 10 seconds timeout
             });
-            console.log(res.status)
-            console.log(res.data.token)
-            if (res.status === 201) {
-                localStorage.setItem("token", res.data.token);
+            
+            console.log("Signup response status:", res.status);
+            console.log("Signup response data:", res.data);
+            
+            // Handle successful signup
+            if (res.status === 201 || res.status === 200) {
+                // Store token if provided (some apps auto-login after signup)
+                if (res.data.token) {
+                    localStorage.setItem("authToken", res.data.token); // Use consistent key
+                }
+                
+                // Show success message (optional)
+                console.log("Account created successfully!");
+                
+                // Navigate to login
                 GoToLogin();
             }
+            
         } catch (error) {
-            console.log(error)
-            setSignUpError("Error in Creating User");
+            console.error("Signup error:", error);
+            
+            if (error.code === 'ECONNABORTED') {
+                setSignUpError("Request timed out. Please try again.");
+            } else if (error.response) {
+                // Server responded with error status
+                const status = error.response.status;
+                const message = error.response.data?.message || 
+                               error.response.data?.error || 
+                               error.response.data;
+                
+                switch (status) {
+                    case 400:
+                        setSignUpError(message || "Invalid input. Please check your details.");
+                        break;
+                    case 409:
+                        setSignUpError("Username or email already exists. Please try different credentials.");
+                        break;
+                    case 422:
+                        setSignUpError("Please provide valid information for all fields.");
+                        break;
+                    case 429:
+                        setSignUpError("Too many signup attempts. Please try again later.");
+                        break;
+                    case 500:
+                        setSignUpError("Server error. Please try again later.");
+                        break;
+                    default:
+                        setSignUpError(message || "Failed to create account. Please try again.");
+                }
+            } else if (error.request) {
+                // Network error (including CORS)
+                console.error("Network error:", error.request);
+                setSignUpError("Unable to connect to server. Please check your connection.");
+            } else {
+                // Something else happened
+                setSignUpError("An unexpected error occurred. Please try again.");
+            }
+        } finally {
+            setLoading(false); // Reset loading state
         }
-    }
+    };
     
 
     const HandleSubmit =  (e) => {
