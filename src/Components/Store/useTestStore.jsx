@@ -1,16 +1,17 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const EXAM_URL = `${import.meta.env.VITE_BACKEND_URL}/${examCode}`
-
 const useTestStore = create((set, get) => ({
   questions: [],
   currentQuestionIndex: 0,
   questionStatuses: [],
   testSubmitted: false,
+
   // Fetch Questions
   fetchQuestions: async (examCode, token) => {
     if (!examCode || !token) return;
+
+    const EXAM_URL = `${import.meta.env.VITE_BACKEND_URL}/${examCode}`;
 
     try {
       const response = await axios.get(EXAM_URL, {
@@ -18,7 +19,6 @@ const useTestStore = create((set, get) => ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        withCredentials: true,
       });
       const fetchedQuestions = response.data;
 
@@ -30,8 +30,8 @@ const useTestStore = create((set, get) => ({
           selectedOption: null,
           markedForReview: false,
         })),
-        currentQuestionIndex: 0,  // Ensure it starts from the first question
-        testSubmitted: false,      // Reset submission status when new questions load
+        currentQuestionIndex: 0,
+        testSubmitted: false,
       });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -56,7 +56,7 @@ const useTestStore = create((set, get) => ({
   toggleMarkForReview: () => {
     const { currentQuestionIndex, questionStatuses } = get();
 
-    if (!questionStatuses[currentQuestionIndex]) return; // Prevents errors if questions aren't loaded
+    if (!questionStatuses[currentQuestionIndex]) return;
 
     const updatedStatuses = [...questionStatuses];
     updatedStatuses[currentQuestionIndex] = {
@@ -80,9 +80,9 @@ const useTestStore = create((set, get) => ({
     });
   },
 
-  // Reset Test Properly
+  // Reset Test
   resetTest: () => {
-    const { questions } = get(); // Keep fetched questions
+    const { questions } = get();
 
     set({
       testSubmitted: false,
