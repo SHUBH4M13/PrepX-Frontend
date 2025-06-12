@@ -54,7 +54,6 @@ export default function Login() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                withCredentials: true,
             });
             
             localStorage.setItem("token", res.data.token);
